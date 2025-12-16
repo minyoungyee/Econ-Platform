@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>실제 데이터 - Econ Experiment</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+
+        :root { --main-color: #2c3e50; } /* 전역 변수 재설정 */
+        
+        .navbar-custom {
+            background-color: #2c3e50 !important; /* style.css보다 우선 적용 */
+        }
+        .navbar-custom .navbar-brand, .navbar-custom .nav-link {
+            color: white !important;
+        }
+        
+        /* Card & Layout */
+        .custom-card {
+            border: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border-radius: 12px;
+            background: white;
+            height: 100%;
+        }
+        
+        .list-group-item { cursor: pointer; border-left: 3px solid transparent; transition: all 0.2s; }
+        .list-group-item.active { 
+            background-color: #eaf2f8; 
+            color: var(--main-color); 
+            border-color: #dee2e6;
+            border-left: 5px solid var(--accent-color);
+            font-weight: bold;
+        }
+        
+        .chart-container { position: relative; height: 400px; width: 100%; }
+        
+        /* 설명 박스 스타일 */
+        .concept-box { background-color: #eef2f5; border-radius: 8px; padding: 15px; margin-bottom: 20px; }
+        .insight-box { background-color: #ffffff; border-left: 4px solid var(--accent-color); padding: 15px; }
+    </style>    
+</head>
+
+<body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg navbar-custom mb-4">
+        <div class="container">
+             <a class="navbar-brand fw-bold" href="index.html">Econ Experiment</a>
+             
+             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                 <span class="navbar-toggler-icon"></span>
+             </button>
+
+             <div class="collapse navbar-collapse" id="navbarNav">
+                 <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="about.html">소개</a></li>
+                    <li class="nav-item"><a class="nav-link" href="demand_supply.html">수요·공급</a></li>
+                    <li class="nav-item"><a class="nav-link" href="elasticity.html">탄력성</a></li>
+                    <li class="nav-item"><a class="nav-link active fw-bold" href="real_data.html">실제 데이터</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="container pb-5">
+        <h2 class="mb-4 pb-2 border-bottom" style="color: var(--main-color);">이론 vs 실제 데이터 (Data Comparison)</h2>
+        
+        <div class="row g-4">
+            <div class="col-lg-3">
+                <div class="list-group shadow-sm" id="menu-list">
+                    <button type="button" class="list-group-item list-group-item-action active" onclick="loadData('gdp', this)">
+                        국내총생산 (GDP Gap)
+                    </button>
+                    <button type="button" class="list-group-item list-group-item-action" onclick="loadData('phillips', this)">
+                        필립스 곡선 (물가vs실업)
+                    </button>
+                    <button type="button" class="list-group-item list-group-item-action" onclick="loadData('exchange', this)">
+                        환율 (시장 vs PPP)
+                    </button>
+                </div>
+                
+                <div class="mt-4 p-3 bg-white border rounded shadow-sm">
+                    <h6 class="fw-bold text-secondary">📊 데이터 소스</h6>
+                    <p class="small text-muted mb-0">
+                        • 한국은행 ECOS (2010-2023)<br>
+                        • 통계청 KOSIS<br>
+                        • IMF WEO Database
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-lg-9">
+                <div class="custom-card p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="h5 fw-bold mb-0" id="chart-title">실질 GDP vs 잠재 GDP</h4>
+                        <span class="badge bg-secondary" id="chart-type-badge">Time Series</span>
+                    </div>
+
+                    <div class="chart-container mb-4">
+                        <canvas id="myChart"></canvas>
+                    </div>
+
+                    <div class="concept-box">
+                        <h6 class="fw-bold text-dark mb-2">📘 개념 잡기 (Basic Concept)</h6>
+                        <p class="small text-secondary mb-0" id="chart-concept">
+                            </p>
+                    </div>
+
+                    <div class="insight-box shadow-sm">
+                        <h6 class="fw-bold text-primary mb-2">💡 실제 데이터 분석 (Insight)</h6>
+                        <p class="mb-2 text-muted small" id="chart-desc">
+                            </p>
+                        <p class="mb-0 text-danger small fw-bold" id="chart-limit">
+                            </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentChart = null;
+
+        // 데이터셋 + 개념 설명(concept) 추가
+        const dataSets = {
+            'gdp': {
+                title: "실질 GDP vs 잠재 GDP (GDP Gap)",
+                type: 'line',
+                badge: "Time Series & Gap",
+                // [추가됨] 개념 설명
+                concept: "<strong>잠재 GDP</strong>란 한 나라가 물가 상승을 유발하지 않고 달성할 수 있는 최대 생산 능력을 의미합니다. 실제 GDP가 이보다 낮으면(Gap < 0) 경제가 침체되었다는 뜻이고, 높으면(Gap > 0) 과열되었다는 뜻입니다.",
+                labels: ['2018', '2019', '2020', '2021', '2022', '2023'],
+                datasets: [
+                    {
+                        label: '잠재 GDP (이론적 장기 추세)',
+                        data: [100, 103, 106, 109, 112, 115],
+                        borderColor: '#95a5a6',
+                        borderDash: [5, 5],
+                        tension: 0.4,
+                        fill: false,
+                        pointRadius: 0
+                    },
+                    {
+                        label: '실질 GDP (실제 데이터)',
+                        data: [101, 102, 95, 105, 110, 113],
+                        borderColor: '#3498db',
+                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 3
+                    }
+                ],
+                desc: "그래프를 보면 2020년에 <strong>COVID-19 팬데믹</strong>으로 인해 실제 GDP(파란선)가 뚝 떨어지는 것을 볼 수 있습니다. 이론적 추세(점선)를 크게 밑도는 '경기 침체 갭'이 발생했다가 서서히 회복하는 모습입니다.",
+                limit: "⚠️ 한계: 잠재 GDP는 관측 불가능한 추정치이므로, 계산 방식(HP필터 등)에 따라 결과가 달라질 수 있습니다."
+            },
+            'phillips': {
+                title: "필립스 곡선 (실업률 vs 물가상승률)",
+                type: 'scatter',
+                badge: "Scatter Plot",
+                concept: "<strong>필립스 곡선</strong>은 실업률과 물가상승률 사이에 '역의 관계(Trade-off)'가 있다는 이론입니다. 즉, 실업률을 낮추려고 경기를 부양하면 물가가 오르고, 물가를 잡으려 하면 실업률이 높아진다는 딜레마를 보여줍니다.",
+                datasets: [
+                    {
+                        label: '실제 경제 데이터 (2010-2023)',
+                        data: [
+                            {x: 3.5, y: 1.5}, {x: 3.2, y: 2.0}, {x: 4.0, y: 0.5}, 
+                            {x: 2.9, y: 4.5}, {x: 3.8, y: 1.0}, {x: 3.0, y: 3.8}
+                        ],
+                        backgroundColor: '#e74c3c',
+                        pointRadius: 6
+                    },
+                    {
+                        label: '이론적 필립스 곡선',
+                        type: 'line',
+                        data: [{x: 2.5, y: 5}, {x: 3.0, y: 3.5}, {x: 3.5, y: 2.0}, {x: 4.0, y: 1.0}, {x: 4.5, y: 0.5}],
+                        borderColor: '#2c3e50',
+                        borderWidth: 2,
+                        pointRadius: 0,
+                        showLine: true,
+                        tension: 0.4
+                    }
+                ],
+                desc: "이론적으로는 점들이 우하향하는 선(검은선) 위에 모여야 합니다. 하지만 실제 데이터(빨간점)는 무작위로 흩어져 보입니다. 이는 기대 인플레이션 변화나 공급 충격(유가 상승 등)이 반영되지 않았기 때문입니다.",
+                limit: "⚠️ 한계: 현대 경제학에서는 '장기 필립스 곡선'은 수직선이라고 보며, 단기에만 이 관계가 유효하다고 봅니다."
+            },
+            'exchange': {
+                title: "빅맥 지수와 환율 (PPP 이론)",
+                type: 'line',
+                badge: "Comparison",
+                concept: "<strong>구매력 평가설(PPP)</strong>은 '일물일가의 법칙'을 기반으로 합니다. 쉽게 말해, 한국과 미국의 빅맥 가격이 같다면 환율도 그에 맞춰 결정되어야 한다는 이론입니다. 이를 통해 현재 환율의 고평가/저평가 여부를 판단합니다.",
+                labels: ['1월', '2월', '3월', '4월', '5월', '6월'],
+                datasets: [
+                    {
+                        label: '적정 환율 (PPP: 빅맥지수 기준)',
+                        data: [1100, 1105, 1110, 1115, 1120, 1125],
+                        borderColor: '#27ae60',
+                        borderWidth: 3,
+                        tension: 0.4
+                    },
+                    {
+                        label: '실제 시장 환율',
+                        data: [1250, 1280, 1310, 1350, 1290, 1260],
+                        borderColor: '#e67e22',
+                        borderDash: [5, 5],
+                        tension: 0.4
+                    }
+                ],
+                desc: "초록색 실선은 빅맥 가격으로 산출한 적정 환율이고, 주황색 점선은 실제 시장 환율입니다. 실제 환율이 더 높게 형성되어 있는데, 이는 원화가 이론적 가치보다 저평가(undervalued) 되어 있거나, 시장의 변동성이 큼을 의미합니다.",
+                limit: "⚠️ 한계: 빅맥 같은 상품에는 인건비나 임대료 같은 '비교역재' 비용이 포함되어 있어 완벽한 기준이 될 수 없습니다."
+            }
+        };
+
+        // Wipe Effect Plugin (속도 0.8초 유지)
+        const wipeEffectPlugin = {
+            id: 'wipeEffect',
+            beforeDatasetsDraw(chart) {
+                if (!chart.startTime) return;
+                const { ctx, chartArea: { left, top, width, height } } = chart;
+                const duration = 800; // 0.8초
+                const elapsed = Date.now() - chart.startTime;
+                const progress = Math.min(elapsed / duration, 1);
+
+                ctx.save();
+                ctx.beginPath();
+                ctx.rect(left, top, width * progress, height);
+                ctx.clip();
+
+                if (progress < 1) {
+                    requestAnimationFrame(() => chart.draw());
+                } else {
+                    chart.startTime = 0;
+                }
+            },
+            afterDatasetsDraw(chart) {
+                chart.ctx.restore();
+            }
+        };
+
+        function renderChart(key) {
+            const ctx = document.getElementById('myChart').getContext('2d');
+            const data = dataSets[key];
+
+            if (currentChart) {
+                currentChart.destroy();
+            }
+
+            const config = {
+                type: data.type === 'scatter' ? 'scatter' : 'line',
+                data: {
+                    labels: data.labels || null,
+                    datasets: data.datasets
+                },
+                options: {
+                    animation: false,
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: { mode: 'index', intersect: false },
+                        legend: { position: 'top' }
+                    },
+                    interaction: { mode: 'nearest', axis: 'x', intersect: false },
+                    scales: {
+                        x: {
+                            type: data.type === 'scatter' ? 'linear' : 'category',
+                            title: { display: true, text: data.type === 'phillips' ? '실업률 (%)' : '기간' }
+                        }
+                    }
+                },
+                plugins: [wipeEffectPlugin]
+            };
+
+            currentChart = new Chart(ctx, config);
+            currentChart.startTime = Date.now();
+            currentChart.draw();
+
+            // 텍스트 업데이트 (개념 설명 추가됨)
+            document.getElementById('chart-title').innerText = data.title;
+            document.getElementById('chart-type-badge').innerText = data.badge;
+            document.getElementById('chart-concept').innerHTML = data.concept; // 여기!
+            document.getElementById('chart-desc').innerHTML = data.desc;
+            document.getElementById('chart-limit').innerText = data.limit;
+        }
+
+        function loadData(key, element) {
+            document.querySelectorAll('#menu-list button').forEach(btn => btn.classList.remove('active'));
+            element.classList.add('active');
+            renderChart(key);
+        }
+
+        window.onload = function() {
+            renderChart('gdp');
+        };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

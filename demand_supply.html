@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>수요와 공급 - Econ Experiment</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+    
+    <style>
+          /* 1. 상단바 색상 강제 지정 (#2c3e50: 진한 네이비) */
+        :root { --main-color: #2c3e50; } /* 전역 변수 재설정 */
+        
+        .navbar-custom {
+            background-color: #2c3e50 !important; /* style.css보다 우선 적용 */
+        }
+        .navbar-custom .navbar-brand, .navbar-custom .nav-link {
+            color: white !important;
+        }
+        /* 1. 슬라이더(Range) 커스텀 스타일링 */
+        /* 공통 설정: 높이와 두께 */
+        .form-range {
+            height: 1.5rem; 
+        }
+        .form-range::-webkit-slider-runnable-track {
+            height: 0.8rem; /* 트랙 두께를 두껍게 */
+            border-radius: 1rem;
+        }
+
+        /* [수요] 파란색 테마 적용 */
+        #demandInput {
+            accent-color: #0d6efd; /* 손잡이 색상 (진한 파랑) */
+        }
+        #demandInput::-webkit-slider-runnable-track {
+            background-color: #cfe2ff; /* 트랙 배경 (연한 파랑) */
+        }
+        /* 파이어폭스 호환성 */
+        #demandInput::-moz-range-track {
+            background-color: #cfe2ff;
+            height: 0.8rem;
+            border-radius: 1rem;
+        }
+
+        /* [공급] 빨간색 테마 적용 */
+        #supplyInput {
+            accent-color: #dc3545; /* 손잡이 색상 (진한 빨강) */
+        }
+        #supplyInput::-webkit-slider-runnable-track {
+            background-color: #f8d7da; /* 트랙 배경 (연한 빨강) */
+        }
+        /* 파이어폭스 호환성 */
+        #supplyInput::-moz-range-track {
+            background-color: #f8d7da;
+            height: 0.8rem;
+            border-radius: 1rem;
+        }
+
+        /* 2. 기존 스타일 유지 */
+        .section-title { color: #2c3e50; font-weight: 700; margin-bottom: 1.5rem; }
+        .concept-icon { font-size: 2rem; margin-bottom: 1rem; }
+        .text-demand { color: #0d6efd; }
+        .text-supply { color: #dc3545; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-custom mb-5">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">Econ Experiment</a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                 <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="about.html">소개</a></li>
+                    <li class="nav-item"><a class="nav-link active fw-bold" href="demand_supply.html">수요·공급</a></li>
+                    <li class="nav-item"><a class="nav-link" href="elasticity.html">탄력성</a></li>
+                    <li class="nav-item"><a class="nav-link" href="real_data.html">실제 데이터</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mb-5">
+        <h2 class="mb-4 pb-2 border-bottom section-title">수요와 공급 시뮬레이터</h2>
+        <p class="lead text-muted mb-5">
+            시장의 보이지 않는 손이 어떻게 가격을 결정할까요? 슬라이더를 움직여 시장의 균형점을 찾아보세요.
+        </p>
+        
+        <div class="row">
+            <div class="col-lg-4 mb-4">
+                <div class="card p-4 h-100 shadow-sm border-0 bg-light">
+                    <h4 class="h5 fw-bold mb-4"><i class="bi bi-sliders"></i> 시장 환경 설정</h4>
+                    
+                    <div class="mb-4">
+                        <label for="demandInput" class="form-label fw-bold text-demand">
+                            소비자 구매력 (Demand Shift)
+                        </label>
+                        <input type="range" class="form-range" id="demandInput" min="50" max="250" step="10" value="150" 
+                               oninput="updateLabel('demandVal', this.value)">
+                        <div class="d-flex justify-content-between small text-muted">
+                            <span>낮음</span>
+                            <span id="demandVal" class="fw-bold text-demand">150</span>
+                            <span>높음</span>
+                        </div>
+                        <div class="form-text small mt-2">
+                            <i class="bi bi-info-circle"></i> 소득 증가 등으로 수요가 늘면 파란색 곡선이 우측(↗) 이동합니다.
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="mb-4">
+                        <label for="supplyInput" class="form-label fw-bold text-supply">
+                            생산 비용 (Supply Shift)
+                        </label>
+                        <input type="range" class="form-range" id="supplyInput" min="0" max="150" step="10" value="50" 
+                               oninput="updateLabel('supplyVal', this.value)">
+                        <div class="d-flex justify-content-between small text-muted">
+                            <span>저렴</span>
+                            <span id="supplyVal" class="fw-bold text-supply">50</span>
+                            <span>비쌈</span>
+                        </div>
+                        <div class="form-text small mt-2">
+                            <i class="bi bi-info-circle"></i> 원자재값 상승 등으로 비용이 늘면 빨간색 곡선이 좌측(↖) 이동합니다.
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary w-100 mt-3 py-2 fw-bold shadow-sm" onclick="drawMarketGraph()">
+                        <i class="bi bi-play-fill"></i> 시뮬레이션 결과 확인
+                    </button>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class="card p-4 h-100 shadow-sm border-0">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h4 class="h5 fw-bold mb-0"><i class="bi bi-graph-up"></i> 시장 균형 (Market Equilibrium)</h4>
+                        <span class="badge bg-secondary">Graph</span>
+                    </div>
+                    
+                    <div class="chart-container flex-grow-1" style="position: relative; min-height:400px;">
+                        <canvas id="marketChart"></canvas>
+                    </div>
+
+                    <div class="mt-4 p-3 bg-white rounded border shadow-sm text-center">
+                        <div class="row align-items-center">
+                            <div class="col-6 border-end">
+                                <small class="text-muted text-uppercase fw-bold">균형 가격 (Price)</small><br>
+                                <div class="mt-2">
+                                    <span id="eqPrice" class="display-6 fw-bold text-dark">0</span>
+                                    <span class="fs-5 text-muted">원</span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted text-uppercase fw-bold">균형 거래량 (Quantity)</small><br>
+                                <div class="mt-2">
+                                    <span id="eqQuantity" class="display-6 fw-bold text-dark">0</span>
+                                    <span class="fs-5 text-muted">개</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="bg-light py-5 mb-5">
+        <div class="container">
+            <h3 class="section-title text-center mb-5">경제학의 기초: 수요와 공급이란?</h3>
+            <div class="row g-4 text-center">
+                <div class="col-md-6">
+                    <div class="card h-100 p-4 border-0 shadow-sm">
+                        <div class="concept-icon text-demand"><i class="bi bi-cart4"></i></div>
+                        <h4 class="fw-bold text-demand">수요 (Demand)</h4>
+                        <p class="lead">"사려는 힘"</p>
+                        <p class="text-muted">
+                            소비자들이 특정 가격에서 재화나 서비스를 구매하려는 의지와 능력을 말합니다.
+                        </p>
+                        <div class="alert alert-primary-subtle text-start small">
+                            <strong><i class="bi bi-lightbulb"></i> 수요의 법칙:</strong><br>
+                            다른 조건이 같을 때, 가격이 비싸지면 덜 사고, 가격이 싸지면 더 많이 삽니다. 그래서 수요 곡선은 <strong>우하향(↘)</strong>합니다.
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100 p-4 border-0 shadow-sm">
+                        <div class="concept-icon text-supply"><i class="bi bi-shop"></i></div>
+                        <h4 class="fw-bold text-supply">공급 (Supply)</h4>
+                        <p class="lead">"팔려는 힘"</p>
+                        <p class="text-muted">
+                            생산자들이 특정 가격에서 재화나 서비스를 판매하려는 의지와 능력을 말합니다.
+                        </p>
+                        <div class="alert alert-danger-subtle text-start small">
+                            <strong><i class="bi bi-lightbulb"></i> 공급의 법칙:</strong><br>
+                            다른 조건이 같을 때, 가격이 비싸지면 더 많이 팔려 하고, 가격이 싸지면 덜 팔려 합니다. 그래서 공급 곡선은 <strong>우상향(↗)</strong>합니다.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container py-4 mb-5">
+        <div class="row align-items-center">
+            <div class="col-lg-5 mb-4 mb-lg-0">
+                <div class="bg-light rounded p-5 text-center text-muted border" style="height: 300px; display: flex; align-items: center; justify-content: center;">
+                    <div>
+                        <i class="bi bi-x-lg display-1 opacity-25"></i><br>
+                        <span>수요와 공급이 만나는 곳 (X)</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-7 ps-lg-5">
+                <h3 class="section-title">시장의 균형: '보이지 않는 손'의 마법</h3>
+                <p class="lead">
+                    그래프에서 파란색(수요)과 빨간색(공급) 선이 교차하는 점이 바로 <strong>균형점(Equilibrium)</strong>입니다.
+                </p>
+                <p>
+                    이곳은 사려는 양과 팔려는 양이 정확히 일치하는 지점입니다. 아담 스미스가 말한 '보이지 않는 손'이 작동하여, 시장은 낭비(초과 공급)나 부족(초과 수요) 없이 가장 효율적인 가격과 거래량을 스스로 찾아갑니다.
+                </p>
+                <ul class="list-unstyled mt-4">
+                    <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> <strong>균형 가격 (P*)</strong>: 시장이 합의한 가격</li>
+                    <li><i class="bi bi-check-circle-fill text-success me-2"></i> <strong>균형 거래량 (Q*)</strong>: 실제 거래되는 수량</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-light py-5">
+        <div class="container">
+            <h3 class="section-title text-center mb-5">현실에서는 곡선이 왜 움직일까요?</h3>
+            <p class="text-center text-muted mb-5">시뮬레이터의 슬라이더가 현실에서 의미하는 것들을 알아봅시다.</p>
+            
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card border-0 shadow-sm p-4">
+                        <h5 class="fw-bold text-demand mb-3"><i class="bi bi-arrow-up-right-square"></i> 수요 곡선의 이동 요인</h5>
+                        <ul class="list-group list-group-flush small">
+                            <li class="list-group-item px-0"><strong class="text-dark">소득의 변화:</strong> 월급이 오르면 같은 가격이어도 더 많이 사려 합니다. (곡선 우측 이동)</li>
+                            <li class="list-group-item px-0"><strong class="text-dark">선호도(유행):</strong> 특정 브랜드가 유행하면 가격에 상관없이 수요가 폭발합니다.</li>
+                            <li class="list-group-item px-0"><strong class="text-dark">대체재/보완재 가격:</strong> 콜라 가격이 오르면 사이다(대체재) 수요가 늘어납니다.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card border-0 shadow-sm p-4">
+                        <h5 class="fw-bold text-supply mb-3"><i class="bi bi-arrow-down-left-square"></i> 공급 곡선의 이동 요인</h5>
+                        <ul class="list-group list-group-flush small">
+                            <li class="list-group-item px-0"><strong class="text-dark">생산 비용(원자재):</strong> 기름값이 오르면 물건을 만드는 비용이 비싸져 공급이 줄어듭니다. (곡선 좌측 이동)</li>
+                            <li class="list-group-item px-0"><strong class="text-dark">기술의 발전:</strong> 새로운 기계가 도입되어 더 싸게 많이 만들 수 있게 됩니다.</li>
+                            <li class="list-group-item px-0"><strong class="text-dark">자연재해 등 충격:</strong> 태풍으로 농작물 피해를 입으면 공급이 급감합니다.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="py-4 text-center text-muted small">
+        <div class="container">
+            © 2023 Econ Experiment. All rights reserved.<br>
+            이 사이트는 교육 목적으로 제작되었습니다.
+        </div>
+    </footer>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        let marketChart = null; 
+
+        function updateLabel(elementId, value) {
+            document.getElementById(elementId).innerText = value;
+        }
+
+        function drawMarketGraph() {
+            const a = parseFloat(document.getElementById('demandInput').value); 
+            const c = parseFloat(document.getElementById('supplyInput').value); 
+
+            let qStar = 0;
+            let pStar = 0;
+
+            if (a > c) {
+                qStar = (a - c) / 2;
+                pStar = a - qStar;
+            }
+
+            const maxQ = qStar > 0 ? Math.floor(qStar * 2.5) : 150;
+            const labels = [];
+            const dataD = [];
+            const dataS = [];
+
+            for (let q = 0; q <= maxQ; q += 5) {
+                labels.push(q);
+                let pd = a - q;
+                dataD.push(pd < 0 ? null : pd);
+                let ps = c + q;
+                dataS.push(ps);
+            }
+
+            document.getElementById('eqPrice').innerText = pStar.toLocaleString();
+            document.getElementById('eqQuantity').innerText = qStar.toLocaleString();
+
+            const ctx = document.getElementById('marketChart').getContext('2d');
+            
+            if (marketChart) {
+                marketChart.destroy();
+            }
+
+            marketChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: '수요 곡선 (Demand)',
+                            data: dataD,
+                            borderColor: '#0d6efd',
+                            backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                            borderWidth: 3,
+                            pointRadius: 0,
+                            tension: 0
+                        },
+                        {
+                            label: '공급 곡선 (Supply)',
+                            data: dataS,
+                            borderColor: '#dc3545',
+                            backgroundColor: 'rgba(220, 53, 69, 0.1)',
+                            borderWidth: 3,
+                            pointRadius: 0,
+                            tension: 0
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { 
+                            title: { display: true, text: '수량 (Quantity)', font: { weight: 'bold' } }, 
+                            beginAtZero: true,
+                            grid: { color: 'rgba(0,0,0,0.05)' }
+                        },
+                        y: { 
+                            title: { display: true, text: '가격 (Price)', font: { weight: 'bold' } }, 
+                            beginAtZero: true,
+                            grid: { color: 'rgba(0,0,0,0.05)' }
+                        }
+                    },
+                    plugins: {
+                        tooltip: { mode: 'index', intersect: false },
+                        legend: { labels: { font: { size: 14 } } }
+                    }
+                }
+            });
+        }
+
+        window.onload = drawMarketGraph;
+    </script>
+</body>
+</html>

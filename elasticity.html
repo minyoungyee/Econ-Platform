@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>탄력성 - Econ Experiment</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* 1. 상단바 색상 강제 지정 (#2c3e50: 진한 네이비) */
+        :root { --main-color: #2c3e50; --accent-color: #3498db; }
+        
+        .navbar-custom {
+            background-color: var(--main-color) !important;
+        }
+        .navbar-custom .navbar-brand, .navbar-custom .nav-link {
+            color: white !important;
+        }
+        
+        /* --- 커스텀 레인지 슬라이더 스타일 (여기서부터 추가됨) --- */
+        /* 슬라이더 기본 스타일 초기화 및 높이 확보 */
+        #elasticityRange::-webkit-slider-thumb {
+            -webkit-appearance: none; /* 크롬/사파리 기본 스타일 제거 */
+            width: 100%;
+            height: 40px; /* 터치/클릭 영역 확보 */
+            background: transparent;
+            cursor: pointer;
+        }
+        
+        /* 트랙(막대) 스타일 - 웹킷(크롬/사파리/엣지) */
+        #elasticityRange::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 14px; /* 트랙을 두껍게 */
+            background: #e9ecef; /* 밝은 회색 배경 */
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+        }
+        
+        /* 손잡이(버튼) 스타일 - 웹킷 */
+        #elasticityRange::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 32px; /* 손잡이 크기 키움 */
+            width: 32px;
+            border-radius: 50%; /* 원형 */
+            background: var(--accent-color); /* 강조색(파랑) 적용 */
+            border: 4px solid white; /* 흰색 테두리로 돋보이게 */
+            box-shadow: 0 4px 8px rgba(52, 152, 219, 0.5); /* 그림자 추가 */
+            margin-top: -10px; /* 트랙 중앙에 맞추기 위한 위치 조정 (14/2 - 32/2) */
+            transition: all 0.2s ease-in-out;
+        }
+        
+        /* 마우스 올렸을 때 손잡이 효과 */
+        #elasticityRange:hover::-webkit-slider-thumb {
+             transform: scale(1.1); /* 살짝 커짐 */
+             background: #2980b9; /* 좀 더 진한 파랑 */
+        }
+
+        /* 파이어폭스 호환성을 위한 스타일 (웹킷과 거의 동일) */
+        #elasticityRange::-moz-range-track {
+            width: 100%;
+            height: 14px;
+            background: #e9ecef;
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+        }
+        #elasticityRange::-moz-range-thumb {
+            height: 32px;
+            width: 32px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            border: 4px solid white;
+            box-shadow: 0 4px 8px rgba(52, 152, 219, 0.5);
+            transition: all 0.2s ease-in-out;
+        }
+        #elasticityRange:hover::-moz-range-thumb {
+             transform: scale(1.1);
+             background: #2980b9;
+        }
+        /* --- 커스텀 슬라이더 스타일 끝 --- */
+
+
+        /* 2. 기타 스타일 */
+        .chart-container { position: relative; height: 400px; width: 100%; }
+        .concept-box { background-color: #ffffff; border-left: 5px solid var(--accent-color); padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .custom-card { border: none; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-radius: 12px; background: white; }
+    </style>
+</head>
+<body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg navbar-custom mb-4">
+        <div class="container">
+             <a class="navbar-brand fw-bold" href="index.html">Econ Experiment</a>
+             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                 <span class="navbar-toggler-icon"></span>
+             </button>
+             <div class="collapse navbar-collapse" id="navbarNav">
+                 <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="about.html">소개</a></li>
+                    <li class="nav-item"><a class="nav-link" href="demand_supply.html">수요·공급</a></li>
+                    <li class="nav-item"><a class="nav-link active fw-bold" href="elasticity.html">탄력성</a></li>
+                    <li class="nav-item"><a class="nav-link" href="real_data.html">실제 데이터</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2 class="mb-4 pb-2 border-bottom" style="color: var(--main-color);">가격 탄력성 (Price Elasticity)</h2>
+        
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="concept-box">
+                    <h4 class="h5 fw-bold text-primary mb-3">💡 수요의 가격 탄력성이란?</h4>
+                    <p class="mb-2">
+                        상품의 <strong>가격이 변할 때</strong>, 소비자들이 <strong>구매량(수요량)을 얼마나 민감하게 바꾸는지</strong>를 나타내는 지표입니다.
+                    </p>
+                    <ul class="text-muted small mb-0">
+                        <li><strong>탄력적 (Elastic, > 1):</strong> 가격이 조금만 올라도 사람들이 구매를 확 줄입니다. (예: 명품, 사치재)</li>
+                        <li><strong>비탄력적 (Inelastic, < 1):</strong> 가격이 올라도 어쩔 수 없이 구매합니다. (예: 쌀, 휴지, 담배 같은 필수재)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="custom-card p-4 h-100">
+                    <h4 class="h5 fw-bold mb-3">탄력성 조절</h4>
+                    <p class="small text-muted">슬라이더를 움직여보세요.</p>
+                    
+                    <div class="my-4 py-3 border rounded bg-light px-3 text-center">
+                        <label for="elasticityRange" class="form-label fw-bold h5 text-primary mb-3">탄력성 계수: <span id="elValue" style="font-size: 1.5em;">1.0</span></label>
+                        <input type="range" id="elasticityRange" min="0.1" max="1.9" step="0.1" value="1.0">
+                        <div class="d-flex justify-content-between small text-muted mt-2 fw-bold">
+                            <span>◀ 비탄력적<br>(가파름)</span>
+                            <span>단위탄력적</span>
+                            <span>탄력적 ▶<br>(완만함)</span>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-light border small" id="statusMessage">
+                        현재 상태: <strong>단위 탄력적</strong><br>
+                        가격 변화율과 수요량 변화율이 동일합니다.
+                    </div>
+
+                    <div class="mt-auto">
+                        <hr>
+                        <p class="small text-muted mb-1"><strong>Tips:</strong></p>
+                        <p class="small text-muted">
+                            그래프는 이해를 돕기 위해 균형점 (50, 50)을 지나도록 고정되어 있습니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-8">
+                <div class="custom-card p-4 h-100">
+                    <div class="chart-container">
+                        <canvas id="elasticityChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        const ctx = document.getElementById('elasticityChart').getContext('2d');
+        
+        function generateData(elasticityVal) {
+            let slope = -1 / (elasticityVal * elasticityVal); 
+            if (elasticityVal > 1) {
+                slope = -1 * (2 - elasticityVal) * (2 - elasticityVal); 
+            }
+            if (elasticityVal == 1) slope = -1;
+
+            const dataPoints = [];
+            for (let q = 0; q <= 100; q += 5) {
+                let p = slope * (q - 50) + 50;
+                if (p >= 0 && p <= 100) {
+                    dataPoints.push({x: q, y: p});
+                }
+            }
+            return dataPoints;
+        }
+
+        const initialData = generateData(1.0);
+
+        const chartConfig = {
+            type: 'line',
+            data: {
+                datasets: [{
+                    label: '수요 곡선 (D)',
+                    data: initialData,
+                    borderColor: '#3498db',
+                    backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                    borderWidth: 3,
+                    pointRadius: 0, 
+                    fill: false,
+                    tension: 0.1
+                }, {
+                    label: '균형점',
+                    data: [{x: 50, y: 50}],
+                    backgroundColor: '#e74c3c',
+                    borderColor: '#e74c3c',
+                    pointRadius: 6,
+                    type: 'scatter'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        type: 'linear',
+                        position: 'bottom',
+                        title: { display: true, text: '수량 (Quantity)' },
+                        min: 0, max: 100
+                    },
+                    y: {
+                        title: { display: true, text: '가격 (Price)' },
+                        min: 0, max: 100
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `Q: ${context.parsed.x}, P: ${context.parsed.y.toFixed(1)}`;
+                            }
+                        }
+                    },
+                    legend: { position: 'top' }
+                }
+            }
+        };
+
+        const myChart = new Chart(ctx, chartConfig);
+
+        const slider = document.getElementById('elasticityRange');
+        const valueLabel = document.getElementById('elValue');
+        const statusMsg = document.getElementById('statusMessage');
+
+        slider.addEventListener('input', function() {
+            const val = parseFloat(this.value);
+            valueLabel.innerText = val.toFixed(1);
+
+            myChart.data.datasets[0].data = generateData(val);
+            myChart.update();
+            updateDescription(val);
+        });
+
+        function updateDescription(val) {
+            let msg = "";
+            let colorClass = "alert-light";
+
+            if (val < 0.8) {
+                msg = `<strong>비탄력적 (Inelastic)</strong><br>가격에 둔감함. (필수재 성격)`;
+                colorClass = "alert-warning"; 
+            } else if (val > 1.2) {
+                msg = `<strong>탄력적 (Elastic)</strong><br>가격에 민감함. (사치재 성격)`;
+                colorClass = "alert-success"; 
+            } else {
+                msg = `<strong>단위 탄력적 (Unit Elastic)</strong><br>변화율이 동일함.`;
+                colorClass = "alert-primary";
+            }
+            
+            statusMsg.innerHTML = msg;
+            statusMsg.className = `alert border small ${colorClass}`;
+        }
+    </script>
+</body>
+</html>

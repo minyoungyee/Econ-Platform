@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Econ Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        :root { --main-color: #2c3e50; --accent-color: #3498db; --bg-light: #f8f9fa; }
+
+        
+        
+    </style>  
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-custom mb-5">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">Econ Experiment</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="about.html">소개</a></li>
+                    <li class="nav-item"><a class="nav-link" href="demand_supply.html">수요·공급</a></li>
+                    <li class="nav-item"><a class="nav-link" href="elasticity.html">탄력성</a></li>
+                    <li class="nav-item"><a class="nav-link" href="real_data.html">실제 데이터</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <header class="container text-center py-5">
+        <h1 class="display-4 fw-bold mb-3">내가 만들어 보는 기초 경제학 그래프!</h1>
+        <p class="lead mb-4 text-secondary">
+            그래프와 수식을 넘어, 변수를 조작하고 결과를 눈으로 확인하세요.<br>
+            이론과 실제 데이터를 연결하는 인터랙티브 학습 플랫폼입니다.
+        </p>
+        <a href="demand_supply.html" class="btn btn-accent-custom btn-lg px-4 me-2">실험 시작하기</a>
+        <a href="about.html" class="btn btn-outline-secondary btn-lg px-4">기획의도(소개)</a>
+    </header>
+
+<section class="container mb-5">
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card h-100 custom-card shadow-sm">
+                <div class="card-body text-center d-flex flex-column pt-4 pb-5">
+                    <h3 class="h5 card-title fw-bold text-primary mb-5">수요와 공급</h3>
+                    
+                    <p class="card-text text-muted mb-4">가격, 소득 변화에 따른 균형점의 이동을 시뮬레이션합니다.</p>
+                    <a href="demand_supply.html" class="btn btn-primary-custom mt-auto py-2 px-4">이동</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 custom-card shadow-sm">
+                <div class="card-body text-center d-flex flex-column pt-4 pb-5">
+                    <h3 class="h5 card-title fw-bold text-primary mb-5">탄력성 실험</h3>
+                    
+                    <p class="card-text text-muted mb-4">가격 변화에 따라 수요량이 얼마나 민감하게 반응하는지 확인합니다.</p>
+                    <a href="elasticity.html" class="btn btn-primary-custom mt-auto py-2 px-4">이동</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 custom-card shadow-sm">
+                <div class="card-body text-center d-flex flex-column pt-4 pb-5">
+                    <h3 class="h5 card-title fw-bold text-primary mb-5">이론 vs 실제</h3>
+                    
+                    <p class="card-text text-muted mb-4">교과서 이론 모형과 실제 경제 데이터를 비교 분석합니다.</p>
+                    <a href="real_data.html" class="btn btn-primary-custom mt-auto py-2 px-4">이동</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

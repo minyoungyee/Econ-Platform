@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>소개 - Econ Experiment</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="style.css">
+
+    <style>
+        /* [기준 스타일] 탄력성 페이지와 동일한 상단바 스타일 */
+        :root { --main-color: #2c3e50; --accent-color: #3498db; --bg-light: #f8f9fa; }
+        
+        /* Navbar 강제 지정 스타일 (elasticity.html과 동일) */
+        .navbar-custom {
+            background-color: var(--main-color) !important;
+        }
+        .navbar-custom .navbar-brand, .navbar-custom .nav-link {
+            color: white !important;
+        }
+        
+
+        .section-title {
+            color: var(--main-color);
+            font-weight: 700;
+            border-bottom: 3px solid var(--accent-color);
+            display: inline-block;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+        }
+
+        .intro-quote {
+            background-color: white;
+            border-left: 5px solid var(--main-color);
+            padding: 2rem;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        }
+
+        .feature-box {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            height: 100%;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        .feature-box:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
+        .feature-icon { font-size: 2rem; color: var(--accent-color); margin-bottom: 1rem; }
+
+        .target-card {
+            border: none;
+            border-radius: 12px;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        .target-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 20px;
+            background-color: #e9ecef;
+            color: var(--main-color);
+        }
+        .target-card h5 { color: var(--main-color); font-weight: 700; margin-top: 10px; }
+    </style>
+</head>
+<body class="bg-light">
+
+    <nav class="navbar navbar-expand-lg navbar-custom mb-4">
+        <div class="container">
+             <a class="navbar-brand fw-bold" href="index.html">Econ Experiment</a>
+             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                 <span class="navbar-toggler-icon"></span>
+             </button>
+             <div class="collapse navbar-collapse" id="navbarNav">
+                 <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active fw-bold" href="about.html">소개</a></li>
+                    <li class="nav-item"><a class="nav-link" href="demand_supply.html">수요·공급</a></li>
+                    <li class="nav-item"><a class="nav-link" href="elasticity.html">탄력성</a></li>
+                    <li class="nav-item"><a class="nav-link" href="real_data.html">실제 데이터</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container pb-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
+                
+                <div class="text-center mb-5">
+                    <h1 class="fw-bold display-5 mb-3" style="color: var(--main-color);">Econ Experiment Platform</h1>
+                    <p class="lead text-muted">정적인 그래프를 넘어, 살아있는 경제를 실험하다.</p>
+                </div>
+
+                <section class="mb-5">
+                    <h2 class="section-title">기획 배경</h2>
+                    <div class="intro-quote">
+                        <p class="fs-5 text-muted fst-italic mb-3">
+                            "경제학 이론은 깊어지는데, 왜 학습 방식은 그대로일까?"
+                        </p>
+                        <p class="mb-3">
+                            경제학 전공 3학년이 되어 심화 이론을 접하면서, 칠판 위의 그래프와 수식만으로는 개념의 
+                            상호작용을 직관적으로 이해하는 데 한계를 느꼈습니다. 단순 암기보다는 
+                            <strong>직접 변수를 조작하고 결과를 즉시 확인하는 과정</strong>이 훨씬 효과적이라는 점을 깨닫게 되었습니다.
+                        </p>
+                        <p class="mb-0">
+                            이러한 고민에서 출발하여, 경제 개념을 단순히 '보는 것'에서 나아가 
+                            <strong>직접 실험하며 체감할 수 있는 인터랙티브 웹 플랫폼</strong>을 기획하게 되었습니다.
+                            개발 과정에서 저 스스로도 개념을 체계적으로 정리하고, 동료 학습자들에게도 실용적인 도구가 되기를 희망합니다.
+                        </p>
+                    </div>
+                </section>
+
+                <section class="mb-5">
+                    <h2 class="section-title">프로젝트 목표</h2>
+                    <div class="row g-4">
+                        <div class="col-md-4">
+                            <div class="feature-box text-center">
+                                <i class="bi bi-graph-up-arrow feature-icon"></i>
+                                <h5 class="fw-bold">직관적 시각화</h5>
+                                <p class="small text-muted mb-0">
+                                    추상적인 수식과 숫자로 배우던 경제 개념을 동적인 그래프로 시각화하여 보여줍니다.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="feature-box text-center">
+                                <i class="bi bi-sliders feature-icon"></i>
+                                <h5 class="fw-bold">참여형 실험</h5>
+                                <p class="small text-muted mb-0">
+                                    사용자가 직접 가격, 소득, 세율 등의 변수를 조작하며 균형의 변화를 관찰합니다.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="feature-box text-center">
+                                <i class="bi bi-lightbulb feature-icon"></i>
+                                <h5 class="fw-bold">이론과 실제의 연결</h5>
+                                <p class="small text-muted mb-0">
+                                    교과서 속 모형과 실제 경제 데이터를 한 공간에서 비교하며 분석력을 기릅니다.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section>
+                    <h2 class="section-title">타겟 사용자</h2>
+                    <p class="text-muted mb-4">경제학 전공자뿐만 아니라, 경제에 관심 있는 다양한 학습자를 위해 설계되었습니다.</p>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="target-card p-4">
+                                <span class="target-badge">Primary</span>
+                                <div class="mt-2 text-center">
+                                    <i class="bi bi-mortarboard fs-3 text-secondary mb-2 d-block"></i>
+                                    <h5>대학(원)생</h5>
+                                    <p class="small text-muted mb-0">경제학 기초 및 미시경제를<br>수강하는 학생</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="target-card p-4">
+                                <span class="target-badge">Secondary</span>
+                                <div class="mt-2 text-center">
+                                    <i class="bi bi-book fs-3 text-secondary mb-2 d-block"></i>
+                                    <h5>고교생 및 교양인</h5>
+                                    <p class="small text-muted mb-0">경제 선택 과목 수험생 및<br>경제 원론 학습자</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="target-card p-4">
+                                <span class="target-badge">Tertiary</span>
+                                <div class="mt-2 text-center">
+                                    <i class="bi bi-person-video3 fs-3 text-secondary mb-2 d-block"></i>
+                                    <h5>교육자 (조교/강사)</h5>
+                                    <p class="small text-muted mb-0">시각적 보조 자료가 필요한<br>수업 진행자</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </div>
+    
+    <footer class="text-center py-4 mt-5 text-muted border-top">
+        <div class="container">
+            <p class="mb-0 small">&copy; 2025 Econ Experiment Platform. Designed by Economics Student.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

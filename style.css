@@ -1,0 +1,67 @@
+@charset "utf-8";
+/* 기획서 폰트: Noto Sans KR [cite: 32] */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;700&display=swap');
+
+:root {
+    /* 기획서 Palette  */
+    --main-color: #1F77B4;      /* 메인 컬러 */
+    --accent-color: #FF7FOE;    /* 서브/액센트 */
+    --sub-color: #2CA02C;       /* 보조 */
+    --bg-color: #F7F9FC;        /* 배경/중립 */
+    --text-color: #111827;      /* 텍스트 */
+    --border-color: #E6EEF6;    /* 경계/그리드 */
+}
+
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+}
+
+/* 네비게이션 바 커스텀 */
+.navbar-custom {
+    background-color: var(--main-color);
+}
+.navbar-custom .navbar-brand, 
+.navbar-custom .nav-link {
+    color: #ffffff !important;
+}
+.navbar-custom .nav-link:hover {
+    color: var(--border-color) !important;
+}
+
+/* 버튼 스타일 커스텀 */
+.btn-primary-custom {
+    background-color: var(--main-color);
+    border-color: var(--main-color);
+    color: #fff;
+} /* 이동버튼 */
+.btn-primary-custom:hover {
+    background-color: #70b3e2; /*이동 버튼에 커서 올릴 때 색바뀜*/
+    color: #000000;
+}
+.btn-accent-custom {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    color: #000000;
+} /* 실험 시작하기 버튼*/
+.btn-accent-custom:hover {
+    background-color: #e66a00;
+    color: #fff;
+}
+
+/* 카드 및 박스 스타일 */
+.custom-card {
+    border: 1px solid var(--border-color);
+    background-color: #ffffff;
+    border-radius: 8px;
+}
+.chart-container {
+    background-color: #ffffff;
+    border: 1px solid var(--border-color);
+    min-height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+}
