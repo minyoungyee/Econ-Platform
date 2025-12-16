@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="ko">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Econ Experiment | 경제학 시뮬레이션 플랫폼</title>
-    
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link rel="stylesheet" href="style.css">
-    
+
     <style>
         :root {
             --main-color: #2c3e50;
@@ -24,15 +25,15 @@
         .navbar-custom {
             background-color: var(--main-color) !important;
         }
-        .navbar-custom .navbar-brand, .navbar-custom .nav-link {
+
+        .navbar-custom .navbar-brand,
+        .navbar-custom .nav-link {
             color: white !important;
         }
-        
-        /* Hero Section (메인 배너) : 배경 이미지 설정 */
+
         .hero-section {
-            /* 무료 이미지 소스(Unsplash) 사용 - 나중에 원하는 사진 파일로 경로를 바꾸세요 */
-            background: linear-gradient(rgba(44, 62, 80, 0.7), rgba(44, 62, 80, 0.7)), 
-                        url('https://images.unsplash.com/photo-1611974765270-ca12586343bb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background: linear-gradient(rgba(44, 62, 80, 0.7), rgba(44, 62, 80, 0.7)),
+                url('https://images.unsplash.com/photo-1611974765270-ca12586343bb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
             background-size: cover;
             background-position: center;
             color: white;
@@ -53,7 +54,6 @@
             transform: translateY(-2px);
         }
 
-        /* 카드 커스텀 */
         .custom-card {
             border: none;
             border-radius: 15px;
@@ -64,7 +64,7 @@
 
         .custom-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1) !important;
         }
 
         .card-img-wrapper {
@@ -92,8 +92,30 @@
             color: var(--accent-color);
             margin-bottom: 1rem;
         }
+
+        .hero-section {
+            position: relative;
+            width: 100%;
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), url('images/main.JPG');
+
+            background-size: cover;
+
+            background-position: center center;
+            background-repeat: no-repeat;
+
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        /* (선택사항) 모바일 장치에서 주소창 등으로 인해 100vh가 너무 길게 느껴질 경우 높이 조정 */
+        @media (max-width: 768px) {
+            .hero-section.min-vh-100 {
+                min-height: 85vh !important;
+                /* 모바일에서는 높이를 조금 줄임 */
+            }
+        }
     </style>
 </head>
+
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-custom fixed-top">
@@ -115,12 +137,14 @@
         </div>
     </nav>
 
-    <header class="hero-section text-center">
-        <div class="container">
-            <span class="badge bg-info bg-opacity-25 border border-info border-opacity-25 text-white mb-3 px-3 py-2 rounded-pill">
+    <div class="hero-section d-flex align-items-center min-vh-100">
+
+        <div class="container text-center py-5">
+            <span
+                class="badge bg-info bg-opacity-25 border border-info border-opacity-25 text-white mb-3 px-3 py-2 rounded-pill">
                 Economic Simulation Platform
             </span>
-            <h1 class="display-3 fw-bold mb-4">경제학, <br>눈으로 보며 이해하세요</h1>
+            <h1 class="display-3 fw-bold mb-4 text-white">경제학, <br>눈으로 보며 이해하세요</h1>
             <p class="lead mb-5 text-white-50 mx-auto" style="max-width: 700px;">
                 복잡한 수식과 그래프를 직접 조작하며 직관적으로 이해할 수 있습니다.<br>
                 수요와 공급의 원리부터 실제 데이터 분석까지, 지금 바로 시작해보세요.
@@ -130,7 +154,8 @@
                 <a href="about.html" class="btn btn-outline-light px-4 py-2 fw-semibold">기획 의도 보기</a>
             </div>
         </div>
-    </header>
+
+    </div>
 
     <section class="container mb-5" style="margin-top: -80px;">
         <div class="row g-4">
@@ -145,7 +170,8 @@
                             가격과 소득 변화에 따라 균형점이 어떻게 이동하는지<br>
                             직접 그래프를 움직이며 확인해보세요.
                         </p>
-                        <a href="demand_supply.html" class="btn btn-outline-primary w-100 stretched-link">실험하기 <i class="bi bi-arrow-right ms-1"></i></a>
+                        <a href="demand_supply.html" class="btn btn-outline-primary w-100 stretched-link">실험하기 <i
+                                class="bi bi-arrow-right ms-1"></i></a>
                     </div>
                 </div>
             </div>
@@ -161,7 +187,8 @@
                             가격 변화에 소비자가 얼마나 민감하게 반응할까요?<br>
                             기울기의 변화를 통해 탄력성을 이해합니다.
                         </p>
-                        <a href="elasticity.html" class="btn btn-outline-primary w-100 stretched-link">실험하기 <i class="bi bi-arrow-right ms-1"></i></a>
+                        <a href="elasticity.html" class="btn btn-outline-primary w-100 stretched-link">실험하기 <i
+                                class="bi bi-arrow-right ms-1"></i></a>
                     </div>
                 </div>
             </div>
@@ -177,7 +204,8 @@
                             교과서 속 이론이 현실 경제에서도 적용될까요?<br>
                             실제 경제 지표 데이터를 불러와 비교합니다.
                         </p>
-                        <a href="real_data.html" class="btn btn-outline-primary w-100 stretched-link">분석하기 <i class="bi bi-arrow-right ms-1"></i></a>
+                        <a href="real_data.html" class="btn btn-outline-primary w-100 stretched-link">분석하기 <i
+                                class="bi bi-arrow-right ms-1"></i></a>
                     </div>
                 </div>
             </div>
@@ -214,13 +242,7 @@
         </div>
     </section>
 
-    <footer class="bg-light py-4 mt-5 border-top">
-        <div class="container text-center">
-            <p class="mb-1 text-secondary">&copy; 2025 Econ Experiment. All rights reserved.</p>
-            <p class="small text-muted">Created by Economics Student | Powered by Bootstrap 5</p>
-        </div>
-    </footer>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
